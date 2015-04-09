@@ -1,5 +1,5 @@
 from django.db import models
-from dirtyfields import DirtyFieldsMixin
+from src.dirtyfields.dirtyfields import DirtyFieldsMixin
 
 
 class TestModel(DirtyFieldsMixin, models.Model):
@@ -14,6 +14,10 @@ class TestModelWithForeignKey(DirtyFieldsMixin, models.Model):
 
 class TestModelWithOneToOneField(DirtyFieldsMixin, models.Model):
     o2o = models.OneToOneField(TestModel)
+
+
+class TestModelWithManyToManyField(DirtyFieldsMixin, models.Model):
+    m2m = models.ManyToManyField(TestModel)
 
 
 class TestModelWithNonEditableFields(DirtyFieldsMixin, models.Model):

@@ -1,6 +1,9 @@
 # Adapted from http://stackoverflow.com/questions/110803/dirty-fields-in-django
+from django.db.models import ForeignKey
+from django.db.models.fields.related import ReverseSingleRelatedObjectDescriptor
 
 from django.db.models.signals import post_save
+
 
 
 class DirtyFieldsMixin(object):
@@ -12,13 +15,28 @@ class DirtyFieldsMixin(object):
                 name=self.__class__.__name__))
         reset_state(sender=self.__class__, instance=self)
 
+    def get_field_value(self, field, **kwargs):
+        value = None
+        if isinstance(field, ForeignKey):
+            if 'check_relationship' in kwargs and kwargs['check_relationship']:
+                # If there is a ForeignKey that is not mandatory and without value,
+                # we don't want to get this data and trigger a non-explicit "RelatedObjectDoesNotExist" error
+                try:
+                    value = getattr(self, field.name)
+                except:
+                    pass
+        else:
+            value = getattr(self, field.name)
+        return value
+
     def _as_dict(self, check_relationship):
         all_field = {}
+        kwargs = {'check_relationship': check_relationship}
 
         for field in self._meta.local_fields:
-            if field.rel and not check_relationship:
-                continue
-            all_field[field.name] = getattr(self, field.name)
+            value = self.get_field_value(field, **kwargs)
+            if value is not None:
+                all_field[field.name] = value
 
         return all_field
 

@@ -25,3 +25,7 @@ class TestModelWithNonEditableFields(DirtyFieldsMixin, models.Model):
     characters = models.CharField(blank=True, max_length=80,
                                   editable=False)
     boolean = models.BooleanField(default=True)
+
+
+class TestModelWithDecimalField(DirtyFieldsMixin, models.Model):
+    decimal_field = models.DecimalField()

@@ -1,8 +1,10 @@
+from decimal import Decimal
 from django.db import IntegrityError
 from django.test import TestCase
 
 from models import (TestModel, TestModelWithForeignKey,
-                    TestModelWithNonEditableFields, TestModelWithOneToOneField, TestModelWithManyToManyField)
+                    TestModelWithNonEditableFields, TestModelWithOneToOneField, TestModelWithManyToManyField,
+                    TestModelWithDecimalField)
 
 
 
@@ -114,3 +116,9 @@ class DirtyFieldsMixinTestCase(TestCase):
 
         tm.m2m.add(tm1)
         self.assertEqual(tm.get_dirty_fields(), {})
+
+    def test_decimal_field_is_correctly_compared(self):
+        tm = TestModelWithDecimalField.objects.create(decimal_field=Decimal(1.0))
+
+        tm.decimal_field = u'1.00'
+        self.assertFalse(tm.is_dirty())

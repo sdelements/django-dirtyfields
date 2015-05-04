@@ -97,7 +97,7 @@ By default, dirty functions are not checking foreign keys. If you want to also t
     >>> tm.get_dirty_fields()
     {}
     >>> tm.get_dirty_fields(check_relationship=True)
-    {'fkey': obj1}
+    {'fkey': 1}
 
 
 Why would you want this?

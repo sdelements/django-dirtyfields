@@ -1,7 +1,7 @@
 from django.db import IntegrityError
 from django.test import TestCase
 from .models import (TestModel, TestModelWithForeignKey,
-                    TestModelWithNonEditableFields, TestModelWithOneToOneField)
+                    TestModelWithNonEditableFields, TestModelWithOneToOneField, TestModelWithTwoForeignKeys)
 
 
 class DirtyFieldsMixinTestCase(TestCase):
@@ -103,3 +103,11 @@ class DirtyFieldsMixinTestCase(TestCase):
         # https://github.com/smn/django-dirtyfields/issues/26
         self.assertRaises(IntegrityError,
                           TestModelWithForeignKey.objects.create)
+
+    def test_avoiding_useless_foreign_key_queries_on_dirty_check(self):
+        tm1 = TestModel.objects.create()
+        tm2 = TestModel.objects.create()
+        tm = TestModelWithTwoForeignKeys.objects.create(fkey=tm1, fkey2=tm2)
+
+        with self.assertNumQueries(0):
+            tm.is_dirty(check_relationship=True)

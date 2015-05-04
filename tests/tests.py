@@ -49,7 +49,7 @@ class DirtyFieldsMixinTestCase(TestCase):
 
         # But if we use 'check_relationships' param, then we have to.
         self.assertEqual(tm.get_dirty_fields(check_relationship=True), {
-            'fkey': tm1
+            'fkey': tm1.id
         })
 
     def test_relationship_option_for_one_to_one_field(self):
@@ -66,7 +66,7 @@ class DirtyFieldsMixinTestCase(TestCase):
 
         # But if we use 'check_relationships' param, then we have to.
         self.assertEqual(tm.get_dirty_fields(check_relationship=True), {
-            'o2o': tm1
+            'o2o': tm1.id
         })
 
     def test_dirty_fields_ignores_the_editable_property_of_fields(self):

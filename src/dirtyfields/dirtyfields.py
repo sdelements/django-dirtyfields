@@ -17,12 +17,16 @@ class DirtyFieldsMixin(object):
         all_field = {}
 
         for field in self._meta.local_fields:
-            if field.rel and not check_relationship:
-                continue
-            try:
+            if field.rel:
+                if not check_relationship:
+                    continue
+                else:
+                    try:
+                        all_field[field.name] = getattr(self, field.name + '_id')
+                    except ObjectDoesNotExist:
+                        pass
+            else:
                 all_field[field.name] = getattr(self, field.name)
-            except ObjectDoesNotExist:
-                pass        
 
         return all_field
 

@@ -1,7 +1,7 @@
 Django Dirty Fields
 ===================
 
-Makes a Mixing available that will give you the methods:
+The mixin provides the following methods:
 
  * is\_dirty()
  * get\_dirty\_fields()

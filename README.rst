@@ -1,29 +1,13 @@
 Django Dirty Fields
 ===================
-.. image:: https://travis-ci.org/smn/django-dirtyfields.svg?branch=develop
-    :target: https://travis-ci.org/smn/django-dirtyfields
-
-Tracking dirty fields on a Django model instance.
-
-::
-
-    $ pip install django-dirtyfields
-
-or if you're interested in developing it
-
-::
-
-    $ virtualenv --no-site-packages ve/
-    $ source ve/bin/activate
-    (ve)$ pip install -r requirements.pip
-    (ve)$ python setup.py develop
-    (ve)$ cd example_app && ./manage.py test testing_app
 
 Makes a Mixing available that will give you the methods:
 
  * is\_dirty()
  * get\_dirty\_fields()
-    
+ * is\_field\_dirty(field\_name)
+ * original\_field\_value(field\_name)
+
 
 Using the Mixin in the Model
 ----------------------------
@@ -62,6 +46,10 @@ Using it in the shell
     True
     >>> tm.get_dirty_fields()
     {'boolean': True, 'characters': 'testing'}
+    >>> tm.is_field_dirty('characters')
+    True
+    >>> tm.original_field_value('characters')
+    u'testing'
     >>> tm.save()
     >>> tm.is_dirty()
     False
@@ -103,9 +91,4 @@ When using signals_, especially pre_save_, it is useful to be able to see what f
 Credits
 -------
 
-This code has largely be adapted from what was made available at `Stack Overflow`_.
-
-.. _Stack Overflow: http://stackoverflow.com/questions/110803/dirty-fields-in-django
-.. _signals: http://docs.djangoproject.com/en/1.2/topics/signals/
-.. _pre_save: http://docs.djangoproject.com/en/1.2/ref/signals/#django.db.models.signals.pre_save
-
+Forked from https://github.com/smn/django-dirtyfields

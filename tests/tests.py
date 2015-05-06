@@ -1,8 +1,7 @@
+from django.db import IntegrityError
 from django.test import TestCase
-
-from models import (TestModel, TestModelWithForeignKey,
+from .models import (TestModel, TestModelWithForeignKey,
                     TestModelWithNonEditableFields, TestModelWithOneToOneField)
-
 
 
 class DirtyFieldsMixinTestCase(TestCase):
@@ -50,7 +49,7 @@ class DirtyFieldsMixinTestCase(TestCase):
 
         # But if we use 'check_relationships' param, then we have to.
         self.assertEqual(tm.get_dirty_fields(check_relationship=True), {
-            'fkey': tm1
+            'fkey': tm1.pk
         })
 
     def test_relationship_option_for_one_to_one_field(self):
@@ -67,7 +66,7 @@ class DirtyFieldsMixinTestCase(TestCase):
 
         # But if we use 'check_relationships' param, then we have to.
         self.assertEqual(tm.get_dirty_fields(check_relationship=True), {
-            'o2o': tm1
+            'o2o': tm1.pk
         })
 
     def test_dirty_fields_ignores_the_editable_property_of_fields(self):
@@ -98,3 +97,9 @@ class DirtyFieldsMixinTestCase(TestCase):
         self.assertEqual(tm.get_dirty_fields(check_relationship=True), {
             'characters': ''
         })
+
+    def test_mandatory_foreign_key_field_not_initialized_is_not_raising_related_object_exception(self):
+        # Non regression test case for bug:
+        # https://github.com/smn/django-dirtyfields/issues/26
+        self.assertRaises(IntegrityError,
+                          TestModelWithForeignKey.objects.create)

@@ -28,7 +28,8 @@ class DirtyFieldsMixin(object):
                 name=self.__class__.__name__))
         if self.ENABLE_M2M_CHECK:
             self._connect_m2m_relations()
-        reset_state(sender=self.__class__, instance=self)
+        if not self.DISABLE_RESET_STATE_ON_M2M_CHANGED:
+            reset_state(sender=self.__class__, instance=self)
 
     def _connect_m2m_relations(self):
         m2m_handler = set_m2m_dirty if self.DISABLE_RESET_STATE_ON_M2M_CHANGED else reset_state

@@ -16,6 +16,9 @@ class DirtyFieldsMixin(object):
     # This mode has been introduced to handle some situations like this one:
     # https://github.com/romgar/django-dirtyfields/issues/73
     ENABLE_M2M_CHECK = False
+
+    # Flag to stop resetting the state on every M2M change, only reset after
+    # post_save(), saving us DB queries
     DISABLE_RESET_STATE_ON_M2M_CHANGED = False
 
     FIELDS_TO_CHECK = None

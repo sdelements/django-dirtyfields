@@ -19,7 +19,7 @@ class DirtyFieldsMixin(object):
 
     # Flag to stop resetting the state on every M2M change, only reset after
     # post_save(), saving us DB queries
-    RESET_STATE_ON_SAVE_ONLY = False
+    ENABLE_BASIC_M2M_CHECK = False
 
     FIELDS_TO_CHECK = None
 
@@ -31,11 +31,10 @@ class DirtyFieldsMixin(object):
                 name=self.__class__.__name__))
         if self.ENABLE_M2M_CHECK:
             self._connect_m2m_relations()
-        if not self.RESET_STATE_ON_SAVE_ONLY:
-            reset_state(sender=self.__class__, instance=self)
+        reset_state(sender=self.__class__, instance=self)
 
     def _connect_m2m_relations(self):
-        m2m_handler = set_m2m_dirty if self.RESET_STATE_ON_SAVE_ONLY else reset_state
+        m2m_handler = set_m2m_dirty if self.ENABLE_BASIC_M2M_CHECK else reset_state
         for m2m_field, model in get_m2m_with_model(self.__class__):
             m2m_changed.connect(
                 m2m_handler, sender=remote_field(m2m_field).through, weak=False,
@@ -127,7 +126,7 @@ class DirtyFieldsMixin(object):
         return modified_fields
 
     def is_dirty(self, check_relationship=False, check_m2m=None):
-        if self.RESET_STATE_ON_SAVE_ONLY and self._m2m_dirty:
+        if self.ENABLE_BASIC_M2M_CHECK and self._m2m_dirty:
             return True
         return {} != self.get_dirty_fields(check_relationship=check_relationship,
                                            check_m2m=check_m2m)
@@ -172,7 +171,7 @@ def reset_state(sender, instance, **kwargs):
         instance._original_state = new_state
     if instance.ENABLE_M2M_CHECK:
         instance._original_m2m_state = instance._as_dict_m2m()
-    elif instance.RESET_STATE_ON_SAVE_ONLY:
+    elif instance.ENABLE_BASIC_M2M_CHECK:
         instance._m2m_dirty = False
 
 

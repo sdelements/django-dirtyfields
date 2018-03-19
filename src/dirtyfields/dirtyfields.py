@@ -172,7 +172,7 @@ def reset_state(sender, instance, **kwargs):
         instance._original_state = new_state
     if instance.ENABLE_M2M_CHECK:
         instance._original_m2m_state = instance._as_dict_m2m()
-    if instance.RESET_STATE_ON_SAVE_ONLY:
+    elif instance.RESET_STATE_ON_SAVE_ONLY:
         instance._m2m_dirty = False
 
 

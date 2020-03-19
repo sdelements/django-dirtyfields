@@ -7,7 +7,7 @@ def listify(filename):
 
 setup(
     name="django-dirtyfields",
-    version="1.4.0dj2",
+    version="1.3.1.dj2",
     url='http://github.com/romgar/django-dirtyfields',
     license='BSD',
     description=("Tracking dirty fields on a Django model instance "
